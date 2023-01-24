@@ -47,12 +47,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Source Build Env
-        id: source-build-env
-        run: |
-          cat ./ci/build.env >> $GITHUB_ENV
-          echo "VERSION=$(cat ./ci/version.txt)" >> $GITHUB_ENV
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
