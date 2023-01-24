@@ -65,6 +65,6 @@ jobs:
             --build-arg=NODE_VERSION=${{ inputs.nodejs-version || env.NODEJS_VERSION }}
             --build-arg=APPS_JSON_BASE64=${{ inputs.apps-json-base64 || env.APPS_JSON_BASE64 }}
             --context=${{ inputs.context || env.CONTEXT }}
-            --destination=registry.frappe.io/${{ github.repository }}/${{ inputs.image || env.IMAGE }}:${{ inputs.version || env.VERSION }}
-            --destination=registry.frappe.io/${{ github.repository }}/${{ inputs.image || env.IMAGE }}:latest
+            --destination=registry.frappe.io/${{ inputs.image || env.IMAGE }}:${{ inputs.version || env.VERSION }}
+            --destination=registry.frappe.io/${{ inputs.image || env.IMAGE }}:latest
           file: ${{ inputs.dockerfile || env.DOCKERFILE }}
