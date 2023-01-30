@@ -65,6 +65,8 @@ jobs:
         with:
           push: true
           cache: true
+          image: ${{ inputs.image }}
+          cache_ttl: 96h
           cache_registry: ghcr.io/frappe-enterprise/bob
           kaniko-args: |
             --build-arg=FRAPPE_PATH=${{ inputs.frappe-repo || env.FRAPPE_REPO }}
