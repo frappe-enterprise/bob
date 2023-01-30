@@ -55,13 +55,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: int128/kaniko-action@v1
+      - uses: int128/kaniko-action@master
         with:
           push: true
           cache: true
-          image: ${{ inputs.image }}
-          cache_ttl: 96h
-          cache_registry: ghcr.io/frappe-enterprise/bob
+          cache-ttl: 96h
+          cache-repository: ghcr.io/${{ github.repository }}/cache
           kaniko-args: |
             --build-arg=FRAPPE_PATH=${{ inputs.frappe-repo || env.FRAPPE_REPO }}
             --build-arg=FRAPPE_BRANCH=${{ inputs.frappe-version || env.FRAPPE_VERSION }}
