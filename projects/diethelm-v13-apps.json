@@ -1,0 +1,15 @@
+[
+  {
+    "url": "https://github.com/frappe/erpnext",
+    "branch": "version-13"
+  },
+  {
+    "url": "https://github.com/cdiethelm/Swiss-Accounting-Integration.git",
+    "branch": "main"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/frappe/erpnext_support",
+    "branch":"master"
+  }
+]
+
