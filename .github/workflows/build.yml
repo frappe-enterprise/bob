@@ -47,17 +47,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Login to GitHub Container Registry
+      - name: Login to Frappe Registry
         uses: docker/login-action@v2
         with:
           registry: registry.frappe.io
           username: ${{ inputs.registry-user || github.actor }}
           password: ${{ secrets.REGISTRY_PASSWORD || secrets.GITHUB_TOKEN }}
+          
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: int128/kaniko-action@v1
         with:
           push: true
           cache: true
+          cache_registry: ghcr.io/frappe-enterprise/bob
           kaniko-args: |
             --build-arg=FRAPPE_PATH=${{ inputs.frappe-repo || env.FRAPPE_REPO }}
             --build-arg=FRAPPE_BRANCH=${{ inputs.frappe-version || env.FRAPPE_VERSION }}
