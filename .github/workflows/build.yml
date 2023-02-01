@@ -28,6 +28,10 @@ on:
       context:
         description: kaniko context
         type: string
+      cache:
+        description: Use Cache
+        type: boolean
+        default: true
 
     secrets:
       REGISTRY_PASSWORD:
@@ -58,8 +62,8 @@ jobs:
       - uses: int128/kaniko-action@v1
         with:
           push: true
-          cache: true
-          cache-ttl: 96h
+          cache: ${{ inputs.cache }}
+          cache-ttl: 24h
           cache-repository: ghcr.io/${{ github.repository }}/cache
           kaniko-args: |
             --build-arg=FRAPPE_PATH=${{ inputs.frappe-repo || env.FRAPPE_REPO }}
