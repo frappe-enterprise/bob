@@ -1,15 +1,7 @@
 [
   {
     "url": "https://github.com/frappe/erpnext",
-    "branch": "version-14"
-  },
-  {
-    "url":"https://github.com/frappe/payments",
-    "branch":"develop"
-  },
-  {
-    "url":"https://github.com/frappe/hrms",
-    "branch":"develop"
+    "branch": "version-13"
   },
   {
     "url": "https://github.com/cdiethelm/Swiss-Accounting-Integration.git",
@@ -17,7 +9,7 @@
   },
   {
     "url":"https://{{user}}:{{token}}@github.com/frappe/erpnext_support",
-    "branch":"develop"
+    "branch":"master"
   }
 ]
 
