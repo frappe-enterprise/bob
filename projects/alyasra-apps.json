@@ -1,0 +1,14 @@
+[
+  {
+    "url": "https://github.com/frappe/erpnext",
+    "branch": "version-14"
+  },
+  {
+    "url":"https://github.com/frappe/payments",
+    "branch":"develop"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/Craftint/alyasra",
+    "branch":"develop"
+  }
+]

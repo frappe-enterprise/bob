@@ -21,8 +21,6 @@ class Image(BaseModel):
     nodejs_version:str = "16.18.0"
     apps_json:str 
     context:str = "git://github.com/frappe/frappe_docker"
-    dockerfile:str = "images/custom/Containerfile"
-    registry_user:str = "frappe"
 
 def get_latest_erpnext_tag(version):
     res = requests.get("https://api.github.com/repos/frappe/erpnext/releases").json()
@@ -47,6 +45,19 @@ def get_build_args(project,version="v14",frappe_version="version-14",py_version=
 async def hello():
     return {"msg":"hello"}
 
+@app.get("/rmdir")
+async def rmdir():
+    print(os.listdir("."))
+    print(os.path.abspath("projects"))
+    # import shutil
+    # shutil.rmtree("/var/task/projects")
+    print(os.listdir("projects/"))
+    # import glob
+    # files = glob.glob("projects/*")
+    # for f in files:
+    #     os.remove(f)
+    return os.listdir(".")
+
 @app.get("/apps")
 async def get_apps(project:str,response:Response):
     try:
@@ -64,13 +75,18 @@ def start_build(image:Image)->requests.Response:
             'X-GitHub-Api-Version': '2022-11-28',
             'Content-Type': 'application/x-www-form-urlencoded',
             } 
-    data = f'{{"ref":"main","inputs":{{"image":"{image.project}","version":"{image.version}","frappe-version":"{image.frappe_version}","py-version":"{image.py_version}","nodejs-version":"{image.nodejs_version}","apps-json-base64":"{image.apps_json}","context":"{image.context}","dockerfile":"{image.dockerfile}","registry-user":"{image.registry_user}","frappe-repo":"https://github.com/frappe/frappe"}}}}'
+    data = f'{{"ref":"main","inputs":{{"image":"{image.project}","version":"{image.version}","frappe-version":"{image.frappe_version}","py-version":"{image.py_version}","nodejs-version":"{image.nodejs_version}","apps-json-base64":"{image.apps_json}","context":"{image.context}","cache":"true","frappe-repo":"https://github.com/frappe/frappe"}}}}'
     response = requests.post(
                 'https://api.github.com/repos/frappe-enterprise/bob/actions/workflows/build.yml/dispatches',
                     headers=headers,
                         data=data,
             )
+    print(response.text)
     return response
+
+@app.get("/projects")
+def return_projects():
+    return get_projects()
 
 def get_projects():
     import glob
@@ -95,10 +111,10 @@ def send_build_request(upd: Update,_:CallbackContext):
     upd.message.reply_text("Please choose from the list of apps.json file for the client:", reply_markup=reply_markup)
 
 
-def change(upd:Update,ctx:CallbackContext):
-    query = upd.callback_query
-    query.answer()
-    kb = generate_inline_buttons(args=True)
+# def change(upd:Update,ctx:CallbackContext):
+#     query = upd.callback_query
+#     query.answer()
+#     kb = generate_inline_buttons(args=True)
 
 
 def build_button(upd:Update, ctx:CallbackContext):
@@ -110,9 +126,8 @@ def build_button(upd:Update, ctx:CallbackContext):
         image.context = "git://github.com/frappe-enterprise/frappe_docker.git#refs/heads/iftas"
     resp = start_build(image=image)
     ctx.bot.send_message(ctx._chat_id_and_data[0],text=f"Build Args:\n ```{image.dict()}```",parse_mode=ps.MARKDOWN)
-    resp.status_code = 204
     if resp.status_code == 204:
-        query.edit_message_text(text=f"Build started for {query.data}")
+        query.edit_message_text(text=f"Build started for {query.data} \nFind logs at https://github.com/frappe-enterprise/bob/actions")
     else:
         query.edit_message_text(text=f"Build failed to start for {query.data}, please refer to {resp.json()}",parse_mode=ps.HTML)
         
@@ -124,10 +139,10 @@ def get_dispatcher():
     dp = Dispatcher(bot=bot, update_queue=None, use_context=True)
     dp.add_handler(CommandHandler("build",send_build_request))
     dp.add_handler(CallbackQueryHandler(build_button))
-    regsiter_handler = ConversationHandler(
-            entry_points=[CommandHandler("build",send_build_request)],
-
-            )
+    # regsiter_handler = ConversationHandler(
+    #         entry_points=[CommandHandler("build",send_build_request)],
+    #
+    #         )
     return dp
 
 disp = get_dispatcher()

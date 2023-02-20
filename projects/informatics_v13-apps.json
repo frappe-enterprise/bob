@@ -1,0 +1,19 @@
+[
+  {
+    "url": "https://github.com/frappe/erpnext",
+    "branch": "version-13"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/frappe/erpnext_support",
+    "branch":"master"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/promantia-ltd/informatics_nhance_app",
+    "branch":"migrations"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/promantia-ltd/informatics_erpnext_app",
+    "branch":"master"
+  }
+]
+
