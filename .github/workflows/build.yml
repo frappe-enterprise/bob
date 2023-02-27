@@ -51,7 +51,10 @@ jobs:
           registry: registry.frappe.io
           username: frappe
           password: ${{ secrets.REGISTRY_PASSWORD || secrets.GITHUB_TOKEN }}
-          
+
+      - name: Generate Date Variable
+        run: echo "TAG_DATE=$(date +'%d%m%Y')" >> $GITHUB_ENV
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -73,5 +76,6 @@ jobs:
             --build-arg=APPS_JSON_BASE64=${{ inputs.apps-json-base64 || env.APPS_JSON_BASE64 }}
             --context=${{ inputs.context || env.CONTEXT }}
             --destination=registry.frappe.io/${{ inputs.image || env.IMAGE }}:${{ inputs.version || env.VERSION }}
+            --destination=registry.frappe.io/${{ inputs.image || env.IMAGE }}:${{ env.TAG_DATE }}
             --destination=registry.frappe.io/${{ inputs.image || env.IMAGE }}:latest
           file: images/custom/Containerfile

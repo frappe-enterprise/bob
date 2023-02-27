@@ -75,7 +75,7 @@ def start_build(image:Image)->requests.Response:
             'X-GitHub-Api-Version': '2022-11-28',
             'Content-Type': 'application/x-www-form-urlencoded',
             } 
-    data = f'{{"ref":"main","inputs":{{"image":"{image.project}","version":"{image.version}","frappe-version":"{image.frappe_version}","py-version":"{image.py_version}","nodejs-version":"{image.nodejs_version}","apps-json-base64":"{image.apps_json}","context":"{image.context}","cache":"true","frappe-repo":"https://github.com/frappe/frappe"}}}}'
+    data = f'{{"ref":"main","inputs":{{"image":"{image.project}","version":"{image.version}","frappe-version":"{image.frappe_version}","py-version":"{image.py_version}","nodejs-version":"{image.nodejs_version}","apps-json-base64":"{image.apps_json}","context":"{image.context}","cache":"false","frappe-repo":"https://github.com/frappe/frappe"}}}}'
     response = requests.post(
                 'https://api.github.com/repos/frappe-enterprise/bob/actions/workflows/build.yml/dispatches',
                     headers=headers,
@@ -96,13 +96,14 @@ def get_projects():
 def generate_inline_buttons(args:bool=False):
     projects = get_projects()
     keyboard = []
-    keyboard_items = []
+    # keyboard_items = []
     # if args:
     #     for key in **Image:
     #         pass
     for project in projects:
-        keyboard_items.append(InlineKeyboardButton(project,callback_data=project))
-    keyboard.append(keyboard_items)
+        keyboard.append([InlineKeyboardButton(project,callback_data=project)])
+    #     keyboard_items.append(InlineKeyboardButton(project,callback_data=project))
+    # keyboard.append([InlineKeyboardButton(project,callback_data=project)])
     keyboard.append([InlineKeyboardButton("Change Build Args", callback_data="change")])
     return keyboard
 
