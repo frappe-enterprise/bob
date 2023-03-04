@@ -1,0 +1,40 @@
+[
+  {
+    "url": "https://github.com/frappe/erpnext",
+    "branch": "version-14"
+  },
+  {
+    "url":"https://github.com/frappe/payments",
+    "branch":"develop"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/iftas-erpnext/rfp",
+    "branch":"develop"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/iftas-erpnext/iftas_finance",
+    "branch":"develop"
+  },
+  {
+    "url":"https://{{user}}:{{token}}@github.com/iftas-erpnext/iftas_customization",
+    "branch":"develop"
+  },
+  {
+    "url":"https://github.com/frappe/hrms",
+    "branch":"version-14"
+  },
+  {
+    "url":"https://github.com/frappe/insights",
+    "branch":"main"
+  },
+
+  {
+    "url":"https://github.com/resilient-tech/india-compliance",
+    "branch":"version-14"
+  },
+  {
+    "url":"https://github.com/frappe/health",
+    "branch":"develop"
+  }
+]
+
