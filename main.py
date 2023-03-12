@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, Form
 from pydantic import BaseModel
-from telegram.ext import CallbackContext, CommandHandler, Dispatcher, CallbackQueryHandler, ConversationHandler
-from telegram import Update, Bot,InlineKeyboardButton, InlineKeyboardMarkup, parsemode
+from telegram.ext import CallbackContext, CommandHandler, Dispatcher, CallbackQueryHandler
+from telegram import Update, Bot,InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.parsemode import ParseMode as ps
-from jinja2 import Environment,FileSystemLoader,meta
+from fastapi.templating import Jinja2Templates
+from jinja2 import Environment,FileSystemLoader
 import requests
 import json
 import base64
@@ -14,6 +15,7 @@ app = FastAPI()
 BOT_TOKEN=os.getenv("BOT_TOKEN")
 GH_TOKEN=os.getenv("GH_TOKEN")
 
+templates = Jinja2Templates(directory="templates")
 
 class Image(BaseModel):
     project:str
@@ -33,7 +35,7 @@ def get_latest_erpnext_tag(version):
         if i['target_commitish'] == version:
             return i['name']
 
-def get_latest_tag(repo:str) -> str|None:
+def get_latest_tag(repo:str) -> str:
     """
     Get's latest tag from GitHub
     """
@@ -84,12 +86,9 @@ def get_build_args(project:str):
         image.py_version = "3.9"
         image.nodejs_version = "14.20.0"
 
+    if project == "iftas": #Change Context due to additional iftas changes
+        image.context = "git://github.com/frappe-enterprise/frappe_docker.git#refs/heads/iftas"
     return image
-
- 
-@app.get("/")
-async def hello():
-    return {"msg":"hello"}
 
 @app.get("/apps")
 async def get_apps(project:str,response:Response):
@@ -132,6 +131,23 @@ def get_projects():
     files = glob.glob("./projects/*.json")
     return [x.split("/")[2].split("-")[0] for x in files]
 
+@app.get("/")
+async def hello(req:Request):
+   projs = get_projects()
+   return templates.TemplateResponse("index.html",{"request":req,"projects":projs})
+
+def validate_token(token):
+    with open("keys.json") as f:
+        keys = json.load(f)
+    return True if token in keys else False
+
+@app.post("/web")
+async def handle_web(project=Form(),token=Form()):
+    if validate_token(token):
+        image = get_build_args(project)
+        resp = start_build(image)
+        return "Your Build Started" if resp.ok else "You Build failed, Please contact Athul"
+
 def generate_inline_buttons():
     """
     Generate Inline Buttons for the Telegram Keyboard
@@ -157,8 +173,6 @@ def build_button(upd:Update, ctx:CallbackContext):
     query = upd.callback_query
     query.answer()
     image = get_build_args(query.data)
-    if query.data == "iftas": #Change Context due to additional iftas changes
-        image.context = "git://github.com/frappe-enterprise/frappe_docker.git#refs/heads/iftas"
     resp = start_build(image=image)
     ctx.bot.send_message(ctx._chat_id_and_data[0],text=f"Build Args:\n ```{image.dict()}```",parse_mode=ps.MARKDOWN)
     if resp.status_code == 204:

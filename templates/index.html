@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+  </head>
+  <body>
+    <h3 align="center">Bob The Builder</h3>
+    <hr>
+    <form action="/web" method="post">
+      <label for="project">Select the Project to build the Docker image</label>
+      <select name="project" required>
+        <option value=""></option>
+      {% for project in projects | sort() %}
+        <option value="{{ project }}"> {{ project | title}} </option>
+      {% endfor %}
+      </select>
+      <label for="bob_pass">Type in the Secret Key</label>
+      <input type="password" name="token" required>
+      <input type="submit" name="" value="Submit">
+    </form>
+  </body>
+</html>
