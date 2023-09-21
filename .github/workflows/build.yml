@@ -65,9 +65,6 @@ jobs:
       - uses: int128/kaniko-action@v1
         with:
           push: true
-          cache: ${{ inputs.cache }}
-          cache-ttl: 1h
-          cache-repository: ghcr.io/${{ github.repository }}/cache
           kaniko-args: |
             --build-arg=FRAPPE_PATH=${{ inputs.frappe-repo || env.FRAPPE_REPO }}
             --build-arg=FRAPPE_BRANCH=${{ inputs.frappe-version || env.FRAPPE_VERSION }}
