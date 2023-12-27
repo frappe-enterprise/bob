@@ -17,7 +17,7 @@
   },
   {
     "url":"https://{{user}}:{{token}}@github.com/iftas-erpnext/iftas_customization",
-    "branch":"master"
+    "branch":"develop"
   },
   {
     "url":"https://github.com/frappe/hrms",
